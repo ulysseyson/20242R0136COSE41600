@@ -15,6 +15,7 @@ pyyaml = "^6.0.2"
 addict = "^2.4.0"
 pandas = "^2.2.3"
 tqdm = "^4.67.1"
+opencv-python = "^4.10.0.84"
 
 
 [build-system]
