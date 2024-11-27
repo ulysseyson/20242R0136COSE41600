@@ -10,7 +10,7 @@ ps = [
 # load view setting
 import json
 
-for p in ps:
+for p in ps[3:]:
     with open(f"view_setting_{p}.json", "r") as f:
         view_setting = json.load(f)
         trajectory = view_setting["trajectory"][0]
@@ -54,7 +54,7 @@ for p in ps:
     distance_threshold = 0.15
     ransac_n = 3
     num_iterations = 3000
-    eps = 0.5
+    eps = 0.3
     min_points = 10
     # 필터링 기준 1. 클러스터 내 최대 최소 포인트 수
     min_points_in_cluster = 5  # 클러스터 내 최소 포인트 수
@@ -62,13 +62,13 @@ for p in ps:
 
     # 필터링 기준 2. 클러스터 내 최소 최대 Z값
     min_z_value = -5.5  # 클러스터 내 최소 Z값
-    max_z_value = 15  # 클러스터 내 최대 Z값
+    max_z_value = 25  # 클러스터 내 최대 Z값
 
     # 필터링 기준 3. 클러스터 내 최소 최대 Z값 차이
     min_height = 0.01  # Z값 차이의 최소값
-    max_height = 15.0  # Z값 차이의 최대값
+    max_height = 20.0  # Z값 차이의 최대값
 
-    max_distance = 400.0  # 원점으로부터의 최대 거리
+    max_distance = 600.0  # 원점으로부터의 최대 거리
     # ========================
     bbox_geometries = []
     for file_path in tqdm(file_paths):
