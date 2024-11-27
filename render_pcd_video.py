@@ -25,7 +25,6 @@ for p in ps:
     file_paths = os.listdir(target)
     # sort file paths
     file_paths.sort()
-    print(file_paths)
     # create a visualizer
     vis = o3d.visualization.Visualizer()
     vis.create_window(width=2800, height=1920)
@@ -49,25 +48,25 @@ for p in ps:
     non_road_geometry = None
     # ========================
     # Parameters for detection
-    voxel_size = 0.4
-    nb_points = 3
-    radius = 1.5
+    voxel_size = 0.2
+    nb_points = 6
+    radius = 1.2
     distance_threshold = 0.15
     ransac_n = 3
     num_iterations = 3000
-    eps = 1.0
-    min_points = 4
+    eps = 0.5
+    min_points = 10
     # 필터링 기준 1. 클러스터 내 최대 최소 포인트 수
     min_points_in_cluster = 5  # 클러스터 내 최소 포인트 수
-    max_points_in_cluster = 15  # 클러스터 내 최대 포인트 수
+    max_points_in_cluster = 120  # 클러스터 내 최대 포인트 수
 
     # 필터링 기준 2. 클러스터 내 최소 최대 Z값
-    min_z_value = -10.0  # 클러스터 내 최소 Z값
-    max_z_value = 10.5  # 클러스터 내 최대 Z값
+    min_z_value = -5.5  # 클러스터 내 최소 Z값
+    max_z_value = 15  # 클러스터 내 최대 Z값
 
     # 필터링 기준 3. 클러스터 내 최소 최대 Z값 차이
-    min_height = 0.1  # Z값 차이의 최소값
-    max_height = 0.0  # Z값 차이의 최대값
+    min_height = 0.01  # Z값 차이의 최소값
+    max_height = 15.0  # Z값 차이의 최대값
 
     max_distance = 400.0  # 원점으로부터의 최대 거리
     # ========================
@@ -112,7 +111,7 @@ for p in ps:
         final_point.colors = o3d.utility.Vector3dVector(colors[:, :3])
         # 필터링 기준 1. 클러스터 내 최대 최소 포인트 수
         min_points_in_cluster = 5  # 클러스터 내 최소 포인트 수
-        max_points_in_cluster = 15  # 클러스터 내 최대 포인트 수
+        max_points_in_cluster = 35  # 클러스터 내 최대 포인트 수
 
         # 필터링 기준 2. 클러스터 내 최소 최대 Z값
         min_z_value = -10  # 클러스터 내 최소 Z값
@@ -120,7 +119,7 @@ for p in ps:
 
         # 필터링 기준 3. 클러스터 내 최소 최대 Z값 차이
         min_height = 0.1  # Z값 차이의 최소값
-        max_height = 2.0  # Z값 차이의 최대값
+        max_height = 4.0  # Z값 차이의 최대값
 
         max_distance = 400.0  # 원점으로부터의 최대 거리
         bboxes_1234 = []
@@ -197,8 +196,8 @@ for p in ps:
         #     )
         vis.poll_events()
         vis.update_renderer()
-        os.makedirs(f"tmp/try4/{p}", exist_ok=True)
-        vis.capture_screen_image(f"tmp/try4/{p}/{file_path}.png")
+        os.makedirs(f"tmp/try6/{p}", exist_ok=True)
+        vis.capture_screen_image(f"tmp/try6/{p}/{file_path}.png")
         # time.sleep(10)
         # vis.run()
         # vis.close()
