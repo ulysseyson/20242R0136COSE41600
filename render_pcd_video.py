@@ -58,17 +58,17 @@ for p in ps[3:]:
     min_points = 10
     # 필터링 기준 1. 클러스터 내 최대 최소 포인트 수
     min_points_in_cluster = 5  # 클러스터 내 최소 포인트 수
-    max_points_in_cluster = 120  # 클러스터 내 최대 포인트 수
+    max_points_in_cluster = 100  # 클러스터 내 최대 포인트 수
 
     # 필터링 기준 2. 클러스터 내 최소 최대 Z값
-    min_z_value = -5.5  # 클러스터 내 최소 Z값
-    max_z_value = 25  # 클러스터 내 최대 Z값
+    min_z_value = -100.5  # 클러스터 내 최소 Z값
+    max_z_value = 20  # 클러스터 내 최대 Z값
 
     # 필터링 기준 3. 클러스터 내 최소 최대 Z값 차이
-    min_height = 0.01  # Z값 차이의 최소값
-    max_height = 20.0  # Z값 차이의 최대값
+    min_height = 0.0  # Z값 차이의 최소값
+    max_height = 5.0  # Z값 차이의 최대값
 
-    max_distance = 600.0  # 원점으로부터의 최대 거리
+    max_distance = 800.0  # 원점으로부터의 최대 거리
     # ========================
     bbox_geometries = []
     for file_path in tqdm(file_paths):
@@ -109,19 +109,7 @@ for p in ps[3:]:
         colors = plt.get_cmap("tab20")(labels / (max_label + 1 if max_label > 0 else 1))
         colors[labels < 0] = 0  # 노이즈는 검정색으로 표시
         final_point.colors = o3d.utility.Vector3dVector(colors[:, :3])
-        # 필터링 기준 1. 클러스터 내 최대 최소 포인트 수
-        min_points_in_cluster = 5  # 클러스터 내 최소 포인트 수
-        max_points_in_cluster = 35  # 클러스터 내 최대 포인트 수
 
-        # 필터링 기준 2. 클러스터 내 최소 최대 Z값
-        min_z_value = -10  # 클러스터 내 최소 Z값
-        max_z_value = 10.5  # 클러스터 내 최대 Z값
-
-        # 필터링 기준 3. 클러스터 내 최소 최대 Z값 차이
-        min_height = 0.1  # Z값 차이의 최소값
-        max_height = 4.0  # Z값 차이의 최대값
-
-        max_distance = 400.0  # 원점으로부터의 최대 거리
         bboxes_1234 = []
         for i in range(max_label + 1):
             cluster_indices = np.where(labels == i)[0]
@@ -196,8 +184,8 @@ for p in ps[3:]:
         #     )
         vis.poll_events()
         vis.update_renderer()
-        os.makedirs(f"tmp/try6/{p}", exist_ok=True)
-        vis.capture_screen_image(f"tmp/try6/{p}/{file_path}.png")
+        os.makedirs(f"tmp/try7/{p}", exist_ok=True)
+        vis.capture_screen_image(f"tmp/try7/{p}/{file_path}.png")
         # time.sleep(10)
         # vis.run()
         # vis.close()
