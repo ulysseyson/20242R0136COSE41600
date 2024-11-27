@@ -15,8 +15,8 @@ ps = [
 ]
 
 for p in ps:
-    image_folder = f"tmp/try2/{p}"
-    output_file = f"tmp/try2/{p}.mp4"
+    image_folder = f"tmp/try4/{p}"
+    output_file = f"tmp/try4/{p}.mp4"
 
     # Get all PNG files in the directory, sorted by filename
     images = [img for img in os.listdir(image_folder) if img.endswith(".png")]

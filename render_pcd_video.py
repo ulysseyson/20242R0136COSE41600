@@ -10,7 +10,7 @@ ps = [
 # load view setting
 import json
 
-for p in ps[1:]:
+for p in ps:
     with open(f"view_setting_{p}.json", "r") as f:
         view_setting = json.load(f)
         trajectory = view_setting["trajectory"][0]
@@ -47,18 +47,45 @@ for p in ps[1:]:
     # Initialize variables to store geometry references
     road_geometry = None
     non_road_geometry = None
+    # ========================
+    # Parameters for detection
+    voxel_size = 0.4
+    nb_points = 3
+    radius = 1.5
+    distance_threshold = 0.15
+    ransac_n = 3
+    num_iterations = 3000
+    eps = 1.0
+    min_points = 4
+    # 필터링 기준 1. 클러스터 내 최대 최소 포인트 수
+    min_points_in_cluster = 5  # 클러스터 내 최소 포인트 수
+    max_points_in_cluster = 15  # 클러스터 내 최대 포인트 수
 
+    # 필터링 기준 2. 클러스터 내 최소 최대 Z값
+    min_z_value = -10.0  # 클러스터 내 최소 Z값
+    max_z_value = 10.5  # 클러스터 내 최대 Z값
+
+    # 필터링 기준 3. 클러스터 내 최소 최대 Z값 차이
+    min_height = 0.1  # Z값 차이의 최소값
+    max_height = 0.0  # Z값 차이의 최대값
+
+    max_distance = 400.0  # 원점으로부터의 최대 거리
+    # ========================
     bbox_geometries = []
     for file_path in tqdm(file_paths):
         original_pcd = o3d.io.read_point_cloud(f"{target}/{file_path}")
-        voxel_size = 0.1
+
         voxel_downsample_pcd = original_pcd.voxel_down_sample(voxel_size=voxel_size)
 
-        cl, ind = voxel_downsample_pcd.remove_radius_outlier(nb_points=15, radius=1.2)
+        cl, ind = voxel_downsample_pcd.remove_radius_outlier(
+            nb_points=nb_points, radius=radius
+        )
         ror_pcd = voxel_downsample_pcd.select_by_index(ind)
 
         plane_model, inliers = ror_pcd.segment_plane(
-            distance_threshold=0.1, ransac_n=3, num_iterations=2000
+            distance_threshold=distance_threshold,
+            ransac_n=ransac_n,
+            num_iterations=num_iterations,
         )
 
         # 도로에 속하지 않는 포인트 (outliers) 추출
@@ -72,7 +99,7 @@ for p in ps[1:]:
             o3d.utility.VerbosityLevel.Debug
         ) as cm:
             labels = np.array(
-                final_point.cluster_dbscan(eps=0.2, min_points=4, print_progress=True)
+                final_point.cluster_dbscan(eps=eps, min_points=min_points)
             )
 
         # 각 클러스터를 색으로 표시
@@ -85,17 +112,17 @@ for p in ps[1:]:
         final_point.colors = o3d.utility.Vector3dVector(colors[:, :3])
         # 필터링 기준 1. 클러스터 내 최대 최소 포인트 수
         min_points_in_cluster = 5  # 클러스터 내 최소 포인트 수
-        max_points_in_cluster = 100  # 클러스터 내 최대 포인트 수
+        max_points_in_cluster = 15  # 클러스터 내 최대 포인트 수
 
         # 필터링 기준 2. 클러스터 내 최소 최대 Z값
-        min_z_value = -1.5  # 클러스터 내 최소 Z값
-        max_z_value = 2.5  # 클러스터 내 최대 Z값
+        min_z_value = -10  # 클러스터 내 최소 Z값
+        max_z_value = 10.5  # 클러스터 내 최대 Z값
 
         # 필터링 기준 3. 클러스터 내 최소 최대 Z값 차이
-        min_height = 0.3  # Z값 차이의 최소값
+        min_height = 0.1  # Z값 차이의 최소값
         max_height = 2.0  # Z값 차이의 최대값
 
-        max_distance = 30.0  # 원점으로부터의 최대 거리
+        max_distance = 400.0  # 원점으로부터의 최대 거리
         bboxes_1234 = []
         for i in range(max_label + 1):
             cluster_indices = np.where(labels == i)[0]
@@ -170,8 +197,8 @@ for p in ps[1:]:
         #     )
         vis.poll_events()
         vis.update_renderer()
-        os.makedirs(f"tmp/try2/{p}", exist_ok=True)
-        vis.capture_screen_image(f"tmp/try2/{p}/{file_path}.png")
+        os.makedirs(f"tmp/try4/{p}", exist_ok=True)
+        vis.capture_screen_image(f"tmp/try4/{p}/{file_path}.png")
         # time.sleep(10)
         # vis.run()
         # vis.close()
